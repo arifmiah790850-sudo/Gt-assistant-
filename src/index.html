@@ -61,41 +61,7 @@ footer{text-align:center;color:#56738d;font-size:11px}
 </div>
 <footer>YOUR PERSONAL AI ASSISTANT</footer>
 </div>
-<script>
-function addMessage(who,msg){
-const box=document.getElementById("messages");
-const div=document.createElement("div");
-div.className="msg "+who.toLowerCase();
-div.textContent=who+": "+msg;
-box.appendChild(div);
-box.scrollTop=box.scrollHeight;
-}
-function speak(text){
-if(!window.speechSynthesis)return;
-let u=new SpeechSynthesisUtterance(text);
-u.lang="en-IN";
-speechSynthesis.speak(u);
-}
-function startGT(){
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(!SR){
-document.getElementById("status").textContent="VOICE ENGINE NOT AVAILABLE";
-return;
-}
-const rec=new SR();
-rec.lang="en-IN";
-rec.onstart=()=>document.getElementById("status").textContent="LISTENING...";
-rec.onresult=e=>{
-let text=e.results[0][0].transcript;
-addMessage("YOU",text);
-let reply="Yes Boss. I heard you say "+text;
-addMessage("GT",reply);
-speak(reply);
-};
-rec.onerror=()=>document.getElementById("status").textContent="VOICE ERROR";
-rec.onend=()=>document.getElementById("status").textContent="SYSTEM READY";
-rec.start();
-}
-</script>
+<script type="module" src="/src/main.js"></script>
+
 </body>
 </html>
