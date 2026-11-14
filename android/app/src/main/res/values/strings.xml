@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">GT Assistant</string>
+    <string name="title_activity_main">GT Assistant</string>
+    <string name="package_name">com.gt.assistant</string>
+    <string name="custom_url_scheme">com.gt.assistant</string>
+</resources>

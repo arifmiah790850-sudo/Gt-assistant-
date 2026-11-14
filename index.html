@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GT Assistant</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050b18;color:white;font-family:Arial}
+.app{max-width:480px;margin:auto;padding:25px 20px}
+header{text-align:center;font-size:25px;letter-spacing:5px;color:#35c8ff;margin-top:20px}
+.status{text-align:center;color:#8baac4;margin:15px}
+.core{width:190px;height:190px;border-radius:50%;margin:60px auto 30px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#1262a0,#07152e 65%);border:2px solid #21baff;box-shadow:0 0 35px #087bca;animation:pulse 3s infinite}
+.core span{font-size:48px;color:#62d9ff}
+@keyframes pulse{50%{box-shadow:0 0 65px #087bca}}
+h2{text-align:center;font-weight:400}
+select{display:block;margin:20px auto;padding:12px;background:#10233b;color:white;border:1px solid #21baff;border-radius:10px}
+#messages{height:190px;overflow:auto;margin-top:20px;background:#0b1628;border:1px solid #173552;border-radius:15px;padding:12px}
+.msg{margin:10px 0;font-size:14px;line-height:1.5}
+.you{color:#55caff}
+.gt{color:white}
+.controls{text-align:center;margin:25px}
+button{border:0;border-radius:50px;padding:17px 35px;background:#087dc4;color:white;font-size:16px}
+footer{text-align:center;color:#56738d;font-size:11px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>GT ASSISTANT</header>
+<div class="status" id="status">SYSTEM READY</div>
+<div class="core"><span>GT</span></div>
+<h2>How can I help you?</h2>
+<select id="language">
+<option value="bn-IN">বাংলা</option>
+<option value="en-IN">English</option>
+<option value="hi-IN">Hindi</option>
+</select>
+<div id="messages">
+<div class="msg gt">GT: Hello! I am GT, your personal assistant.</div>
+</div>
+<div class="controls">
+<button onclick="startGT()">🎙 Talk to GT</button>
+</div>
+<footer>YOUR PERSONAL AI ASSISTANT</footer>
+</div>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
