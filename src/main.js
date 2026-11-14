@@ -163,6 +163,14 @@ async function startGT() {
             ' | MEDIA=' + typeof navigator.mediaDevices +
             ' | MIC=' + typeof navigator.mediaDevices?.getUserMedia;
 
+        try {
+            const permission = await navigator.permissions.query({name: 'microphone'});
+            console.log('GT MIC PERMISSION:', permission.state);
+            status.textContent = 'MIC PERMISSION=' + permission.state;
+        } catch (e) {
+            console.log('GT MIC PERMISSION CHECK:', e.name, e.message);
+        }
+
         stream = await navigator.mediaDevices.getUserMedia({
             audio: {
                 channelCount: 1,
