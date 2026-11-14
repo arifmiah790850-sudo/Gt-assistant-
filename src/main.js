@@ -1,4 +1,5 @@
-import { SpeechRecognition } from '@capacitor-community/speech-recognition';
+import { SpeechRecognition as NativeSR } from '@capacitor-community/speech-recognition';
+import { Capacitor } from '@capacitor/core';
 
 const status = document.getElementById('status');
 const messages = document.getElementById('messages');
@@ -10,75 +11,74 @@ function addMessage(who, message) {
     div.className = 'msg ' + who.toLowerCase();
     div.textContent = who + ': ' + message;
     messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
 }
 
 function speak(message, language) {
     if (!window.speechSynthesis) return;
     speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(message);
-    utterance.lang = language;
-    utterance.rate = 0.95;
-    speechSynthesis.speak(utterance);
+    const u = new SpeechSynthesisUtterance(message);
+    u.lang = language;
+    u.rate = 0.88;
+    u.pitch = 1.15;
+    speechSynthesis.speak(u);
 }
 
 async function startGT() {
     if (listening) return;
+    listening = true;
+
+    const language = document.getElementById('language').value;
 
     try {
-        status.textContent = 'CHECKING PERMISSION...';
-
-        const permission = await SpeechRecognition.requestPermissions();
-
-        if (permission.speechRecognition !== 'granted') {
-            status.textContent = 'MICROPHONE PERMISSION REQUIRED';
-            return;
-        }
-
-        const available = await SpeechRecognition.available();
-
-        if (!available.available) {
-            status.textContent = 'VOICE ENGINE UNAVAILABLE';
-            return;
-        }
-
-        listening = true;
         status.textContent = 'LISTENING...';
+        let recognized = '';
 
-        const language = document.getElementById('language').value;
+        if (Capacitor.isNativePlatform()) {
+            await NativeSR.requestPermissions();
+            const available = await NativeSR.available();
+            if (!available.available) throw Error('Voice unavailable');
 
-        const result = await SpeechRecognition.start({
-            language,
-            maxResults: 1,
-            partialResults: false,
-            popup: true
-        });
+            const result = await NativeSR.start({
+                language,
+                maxResults: 1,
+                partialResults: false,
+                popup: true
+            });
 
-        const recognized = result.matches?.[0];
+            recognized = result.matches?.[0] || '';
+        } else {
+            const SR = window.SpeechRecognition ||
+                       window.webkitSpeechRecognition;
+
+            if (!SR) throw Error('Browser speech recognition unsupported');
+
+            recognized = await new Promise((resolve, reject) => {
+                const rec = new SR();
+                rec.lang = language;
+                rec.onresult = e => resolve(e.results[0][0].transcript);
+                rec.onerror = e => reject(Error(e.error));
+                rec.start();
+            });
+        }
 
         if (recognized) {
             addMessage('YOU', recognized);
 
-            const bangla = language === 'bn-IN';
-
-            const reply = bangla
-                ? 'হ্যাঁ Boss, আমি শুনছি। আপনি বলেছেন ' + recognized
-                : 'Yes Boss, I am listening. You said ' + recognized;
+            const reply = language === 'bn-IN'
+                ? 'জি Boss, আপনার কথা শুনেছি। ' + recognized
+                : 'Yes Boss, I heard you. ' + recognized;
 
             addMessage('GT', reply);
-            speak(reply, bangla ? 'bn-IN' : 'en-IN');
+            speak(reply, language);
         } else {
             status.textContent = 'NO SPEECH DETECTED';
         }
 
     } catch (error) {
-        console.error('GT Voice Error:', error);
-        status.textContent = 'VOICE ERROR';
+        console.error(error);
+        status.textContent = 'ERROR: ' + error.message;
     } finally {
         listening = false;
-        if (status.textContent === 'LISTENING...') {
-            status.textContent = 'SYSTEM READY';
-        }
     }
 }
 
