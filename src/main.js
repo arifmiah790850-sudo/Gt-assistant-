@@ -1,5 +1,6 @@
 import { SpeechRecognition as NativeSR } from '@capacitor-community/speech-recognition';
 import { Capacitor } from '@capacitor/core';
+import { TextToSpeech } from '@capacitor-community/text-to-speech';
 
 const status = document.getElementById('status');
 const messages = document.getElementById('messages');
@@ -13,14 +14,19 @@ function addMessage(who, message) {
     messages.appendChild(div);
 }
 
-function speak(message, language) {
-    if (!window.speechSynthesis) return;
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(message);
-    u.lang = language;
-    u.rate = 0.88;
-    u.pitch = 1.15;
-    speechSynthesis.speak(u);
+async function speak(message, language) {
+    try {
+        await TextToSpeech.speak({
+            text: message,
+            lang: language,
+            rate: 0.88,
+            pitch: 1.15,
+            volume: 1.0
+        });
+    } catch (error) {
+        console.error('GT Voice Error:', error);
+        status.textContent = 'VOICE ERROR: ' + error.message;
+    }
 }
 
 async function startGT() {
