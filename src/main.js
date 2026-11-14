@@ -157,6 +157,12 @@ async function startGT() {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         await audioContext.resume();
 
+        status.textContent =
+            'SECURE=' + window.isSecureContext +
+            ' | ORIGIN=' + location.origin +
+            ' | MEDIA=' + typeof navigator.mediaDevices +
+            ' | MIC=' + typeof navigator.mediaDevices?.getUserMedia;
+
         stream = await navigator.mediaDevices.getUserMedia({
             audio: {
                 channelCount: 1,
