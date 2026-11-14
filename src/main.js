@@ -242,7 +242,8 @@ async function startGT() {
 
     } catch (error) {
         console.error('GT Live Error:', error);
-        status.textContent = 'ERROR: ' + error.message;
+        status.textContent =
+            'ERROR: ' + error.name + ' - ' + error.message;
         cleanup();
         if (ws) {
             ws.close();
