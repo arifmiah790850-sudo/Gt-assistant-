@@ -148,11 +148,11 @@ function playAudio(base64, mimeType) {
     };
 }
 
-async function startGT() {
+async function startAliza() {
     if (listening) return;
 
     try {
-        status.textContent = 'CONNECTING TO GT...';
+        status.textContent = 'CONNECTING TO ALIZA...';
 
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         await audioContext.resume();
@@ -165,10 +165,10 @@ async function startGT() {
 
         try {
             const permission = await navigator.permissions.query({name: 'microphone'});
-            console.log('GT MIC PERMISSION:', permission.state);
+            console.log('ALIZA MIC PERMISSION:', permission.state);
             status.textContent = 'MIC PERMISSION=' + permission.state;
         } catch (e) {
-            console.log('GT MIC PERMISSION CHECK:', e.name, e.message);
+            console.log('ALIZA MIC PERMISSION CHECK:', e.name, e.message);
         }
 
         stream = await navigator.mediaDevices.getUserMedia({
@@ -187,8 +187,8 @@ async function startGT() {
 
             if (msg.type === 'ready') {
                 listening = true;
-                status.textContent = 'GT LIVE - LISTENING';
-                addMessage('GT', 'জি Boss, আমি শুনছি।');
+                status.textContent = 'ALIZA LIVE - LISTENING';
+                addMessage('ALIZA', 'জি Boss, আমি শুনছি।');
 
                 micSource = audioContext.createMediaStreamSource(stream);
                 processor = audioContext.createScriptProcessor(4096, 1, 1);
@@ -224,7 +224,7 @@ async function startGT() {
             }
 
             if (msg.type === 'output_text') {
-                addMessage('GT', msg.text);
+                addMessage('ALIZA', msg.text);
             }
 
             if (msg.type === 'audio') {
@@ -233,15 +233,15 @@ async function startGT() {
 
             if (msg.type === 'interrupted') {
                 stopPlayback();
-                status.textContent = 'GT LIVE - LISTENING';
+                status.textContent = 'ALIZA LIVE - LISTENING';
             }
 
             if (msg.type === 'turn_complete') {
-                status.textContent = 'GT LIVE - LISTENING';
+                status.textContent = 'ALIZA LIVE - LISTENING';
             }
 
             if (msg.type === 'error') {
-                status.textContent = 'GT ERROR: ' + msg.message;
+                status.textContent = 'ALIZA ERROR: ' + msg.message;
             }
         };
 
@@ -251,11 +251,11 @@ async function startGT() {
 
         ws.onclose = () => {
             cleanup();
-            status.textContent = 'GT DISCONNECTED';
+            status.textContent = 'ALIZA DISCONNECTED';
         };
 
     } catch (error) {
-        console.error('GT Live Error:', error);
+        console.error('ALIZA Live Error:', error);
         status.textContent =
             'ERROR: ' + error.name + ' - ' + error.message;
         cleanup();
@@ -266,7 +266,7 @@ async function startGT() {
     }
 }
 
-function stopGT() {
+function stopAliza() {
     listening = false;
 
     if (ws?.readyState === WebSocket.OPEN) {
@@ -276,8 +276,8 @@ function stopGT() {
 
     ws = null;
     cleanup();
-    status.textContent = 'GT STOPPED';
+    status.textContent = 'ALIZA STOPPED';
 }
 
-startButton.addEventListener('click', startGT);
-stopButton.addEventListener('click', stopGT);
+startButton.addEventListener('click', startAliza);
+stopButton.addEventListener('click', stopAliza);
